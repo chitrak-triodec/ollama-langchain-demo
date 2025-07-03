@@ -1,4 +1,5 @@
-# app/controllers/chat_histories_controller.rb
+# frozen_string_literal: true
+
 class ChatHistoriesController < ApplicationController
   def index
     # Use a persistent conversation ID for this user session
@@ -15,13 +16,14 @@ class ChatHistoriesController < ApplicationController
 
     # Save user message
     ChatMessage.create!(
-      role: "user",
+      role: 'user',
       content: prompt,
       conversation_id: conversation_id
     )
 
     # Get full conversation so far
-    messages = ChatMessage.where(conversation_id: conversation_id).order(:created_at).pluck(:role, :content).map do |role, content|
+    messages = ChatMessage.where(conversation_id: conversation_id).order(:created_at).pluck(:role,
+                                                                                            :content).map do |role, content|
       { role: role, content: content }
     end
 
@@ -31,7 +33,7 @@ class ChatHistoriesController < ApplicationController
 
     # Save assistant reply
     ChatMessage.create!(
-      role: "assistant",
+      role: 'assistant',
       content: reply,
       conversation_id: conversation_id
     )
@@ -41,6 +43,6 @@ class ChatHistoriesController < ApplicationController
 
   def reset
     session[:conversation_id] = SecureRandom.uuid
-    redirect_to chat_histories_path, notice: "Started a new chat!"
+    redirect_to chat_histories_path, notice: 'Started a new chat!'
   end
 end
