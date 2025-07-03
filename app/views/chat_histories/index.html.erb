@@ -1,0 +1,24 @@
+<h1>Chat with Ollama</h1>
+<% if notice %>
+  <p style="color: green;"><%= notice %></p>
+<% end %>
+
+<% if @chat_history.present? %>
+  <h2>Conversation:</h2>
+  <div style="white-space: pre-line;">
+    <% @chat_history.each do |message| %>
+      <p><strong><%= message.role.capitalize %>:</strong> <%= message.content %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<hr>
+
+<%= form_with url: chat_histories_path, data: { turbo: false } do |f| %>
+  <%= f.label :message %><br>
+  <%= f.text_area :message, rows: 3 %><br>
+  <%= f.submit "Send" %>
+<% end %>
+<hr>
+<%= button_to "Start New Chat", reset_chat_histories_path, method: :post, class: "button" %>
+

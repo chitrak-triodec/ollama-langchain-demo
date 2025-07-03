@@ -1,0 +1,27 @@
+<h1>Chat with Ollama</h1>
+
+<%= form_with url: chats_path, data: { turbo: false }, id: "chat-form" do |f| %>
+  <%= f.label :message %><br>
+  <%= f.text_area :message, rows: 5, value: @prompt %><br>
+  <%= f.submit "Send", id: "submit-btn" %>
+<% end %>
+
+<% if @reply.present? %>
+  <h2>You asked:</h2>
+  <p><%= @prompt %></p>
+
+  <h2>LLM says:</h2>
+  <p><%= @reply %></p>
+<% end %>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("chat-form");
+    const submitBtn = document.getElementById("submit-btn");
+
+    form.addEventListener("submit", () => {
+      submitBtn.disabled = true;
+      submitBtn.value = "Sending...";
+    });
+  });
+</script>
