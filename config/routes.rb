@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  root 'chats#index'
+  root 'chat_histories#index'
   resources :chats, only: [:index, :create]
   resources :chat_histories, only: [:index, :create] do
     collection do

@@ -25,10 +25,27 @@ class LlmClient
 
   def chat_history(messages)
     Faraday.default_connection_options = Faraday::ConnectionOptions.new({ timeout: 1000 })
-    response = @llm.chat(
-      messages: messages
-    )
+    full_response = String.new
 
-    response.raw_response['message']['content']
+    @llm.chat(
+      messages: messages,
+      stream: true
+    ) do |chunk|
+      # binding.pry
+      next unless chunk.raw_response["message"] && chunk.raw_response["message"]["content"].present?
+
+      text = chunk.raw_response["message"]["content"]
+
+      Turbo::StreamsChannel.broadcast_append_to(
+        "assistant_stream",
+        target: "streamed_reply",
+        partial: "chat_histories/stream_chunk",
+        locals: { chunk: text }
+      )
+
+      full_response << text
+    end
+
+    full_response
   end
 end
